@@ -38,63 +38,72 @@ public class programa {
 			    String filtroInitialSelection = "Selecione a opção desejada";
 			    Object filtro = JOptionPane.showInputDialog(null, "Filtrar alunos por qual valor?",
 			        "Banco de Dados de Estudantes", JOptionPane.QUESTION_MESSAGE, null, filtroValues, filtroInitialSelection);
-			    String filtrotext = filtro.toString();
 			    
-			    String valorFiltro = JOptionPane.showInputDialog("Insira o " + filtrotext + " a ser filtrado: ");
+			    if(filtro == null) {
+			    	opcao = null;
+			    }
 			    
-		    	ResultSet resultSet = null;
-		    	Statement statement = null;
-		    	
-		    	String query = "SELECT *" 
-	    		    	+ " FROM tbl_estudantes"
-	    		    	+ " WHERE ";
-		    	
-		    	if(filtrotext == "Nome" || filtrotext == "Curso" || filtrotext == "Matrícula") {
-		    		query = query + filtrotext.toLowerCase() + " = " + "'" + valorFiltro + "'";
-		    	}
-		    	else {
-		    		query = query + filtrotext.toLowerCase() + " = " + Integer.parseInt(valorFiltro);
-		    	}
-		    	
-		    	statement = sqLiteDemo.criarStatement();
-		    	
-		    	try {
-		    		resultSet = statement.executeQuery(query);
-		    		
-		    		String queryResult = "<html>";
-		    		
-		    		if(resultSet.next() == true) {
-		    			queryResult = queryResult 
+			    else {
+			    	String filtrotext = filtro.toString();
+			  
+			    
+				    String valorFiltro = JOptionPane.showInputDialog("Insira o " + filtrotext + " a ser filtrado: ");
+				    
+			    	ResultSet resultSet = null;
+			    	Statement statement = null;
+			    	
+			    	String query = "SELECT *" 
+		    		    	+ " FROM tbl_estudantes"
+		    		    	+ " WHERE ";
+			    	
+			    	if(filtrotext == "Nome" || filtrotext == "Curso" || filtrotext == "Matrícula") {
+			    		query = query + filtrotext.toLowerCase() + " = " + "'" + valorFiltro + "'";
+			    	}
+			    	else {
+			    		query = query + filtrotext.toLowerCase() + " = " + Integer.parseInt(valorFiltro);
+			    	}
+			    	
+			    	statement = sqLiteDemo.criarStatement();
+			    	
+			    	try {
+			    		resultSet = statement.executeQuery(query);
+			    		
+			    		String queryResult = "<html>";
+			    		
+			    		if(resultSet.next() == true) {
+			    			queryResult = queryResult 
+					    			+ "(Matrícula: " + resultSet.getString("matrícula") 
+					    			+ "; Nome: " + resultSet.getString("nome")
+					    			+ "; Idade: " + resultSet.getInt("idade")
+					    			+ "; Curso: " + resultSet.getString("curso")
+					    			+ "; Semestre: " + resultSet.getInt("semestre")
+					    			+ ") <br><br>";
+			    			while(resultSet.next()) {
+				    			queryResult = queryResult 
 				    			+ "(Matrícula: " + resultSet.getString("matrícula") 
 				    			+ "; Nome: " + resultSet.getString("nome")
 				    			+ "; Idade: " + resultSet.getInt("idade")
 				    			+ "; Curso: " + resultSet.getString("curso")
 				    			+ "; Semestre: " + resultSet.getInt("semestre")
 				    			+ ") <br><br>";
-		    			while(resultSet.next()) {
-			    			queryResult = queryResult 
-			    			+ "(Matrícula: " + resultSet.getString("matrícula") 
-			    			+ "; Nome: " + resultSet.getString("nome")
-			    			+ "; Idade: " + resultSet.getInt("idade")
-			    			+ "; Curso: " + resultSet.getString("curso")
-			    			+ "; Semestre: " + resultSet.getInt("semestre")
-			    			+ ") <br><br>";
-			    			System.out.println(resultSet.getString("nome"));
+				    			System.out.println(resultSet.getString("nome"));
+				    		}
 			    		}
-		    		}
-		    		else {
-		    			queryResult = queryResult + "Aluno(s) não encontrado(s)!<br>Tente novamente.";
-		    		}
-		    		
-			        JOptionPane optionPane = new NarrowOptionPane();
-			        optionPane.setMessage(queryResult);
-			        optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
-			        JDialog dialog = optionPane.createDialog(null, "Banco de Dados de Estudantes");
-			        dialog.setVisible(true);
-		    	}
-		    	catch (SQLException e) {
-		    		System.out.println("Erro no query: " + e);
-		    	}
+			    		else {
+			    			queryResult = queryResult + "Aluno(s) não encontrado(s)!<br>Tente novamente.";
+			    		}
+			    		
+				        JOptionPane optionPane = new NarrowOptionPane();
+				        optionPane.setMessage(queryResult);
+				        optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+				        JDialog dialog = optionPane.createDialog(null, "Banco de Dados de Estudantes");
+				        dialog.setVisible(true);
+			    	}
+			    	catch (SQLException e) {
+			    		System.out.println("Erro no query: " + e);
+			    	}
+			    
+			    }
 		    }
 		    
 		    
@@ -153,9 +162,9 @@ public class programa {
 				int verificacao = 0;
 				String matrColetado = "";
 				String nomeColetado = "";
-				int idadeColetado = 0;
+				String idadeColetado = "";
 				String cursoColetado = "";
-				int semestreColetado = 0;
+				String semestreColetado = "";
 				
 				JFrame frame = new JFrame();
 				String[] options = new String[2];
@@ -163,59 +172,68 @@ public class programa {
 				options[1] = new String("Não");
 				
 				while(verificacao == 0) {
-					matrColetado = (JOptionPane.showInputDialog("Insira a matrícula do aluno: ")).toUpperCase();
+					matrColetado = (JOptionPane.showInputDialog("Insira a matrícula do aluno: "));
 					nomeColetado = JOptionPane.showInputDialog("Insira o nome completo do aluno: ");
-					idadeColetado = Integer.parseInt(JOptionPane.showInputDialog("Insira a idade do aluno: "));
+					idadeColetado = JOptionPane.showInputDialog("Insira a idade do aluno: ");
 					cursoColetado = JOptionPane.showInputDialog("Insira o curso do aluno: ");
-					semestreColetado = Integer.parseInt(JOptionPane.showInputDialog("Insira o semestre do aluno: "));
-					
-					Pessoa aluno = new Pessoa();
-					aluno.setMatricula(matrColetado);
-					aluno.setNome(nomeColetado);
-					aluno.setIdade(idadeColetado);
-					aluno.setCurso(cursoColetado);
-					aluno.setSemestre(semestreColetado);
-		
-					String sqlInsert = "INSERT INTO tbl_estudantes ("
-							+ "matrícula,"
-							+ "nome,"
-							+ "idade,"
-							+ "curso,"
-							+ "semestre"
-							+ ") VALUES(?, ?, ?, ?, ?)"
-							+ ";";
-					
-					PreparedStatement preparedStatement = sqLiteDemo.criarPreparedStatement(sqlInsert);
-					
-					try {
-						preparedStatement.setString(1, aluno.getMatricula());
-						preparedStatement.setString(2, aluno.getNome());
-						preparedStatement.setInt(3, aluno.getIdade());
-						preparedStatement.setString(4, aluno.getCurso());
-						preparedStatement.setInt(5, aluno.getSemestre());
+					semestreColetado = JOptionPane.showInputDialog("Insira o semestre do aluno: ");
+					if(matrColetado == null ||nomeColetado == null || idadeColetado == null || cursoColetado == null || semestreColetado == null ) {
+				    	verificacao = 1;
+				    }
+				    
+				    else {
+					    	
+					    int intIdadeColetado = Integer.parseInt(idadeColetado);
+					    int intSemestreColetado = Integer.parseInt(semestreColetado);
 						
-						int resultado = preparedStatement.executeUpdate();
+						Pessoa aluno = new Pessoa();
+						aluno.setMatricula(matrColetado);
+						aluno.setNome(nomeColetado);
+						aluno.setIdade(intIdadeColetado);
+						aluno.setCurso(cursoColetado);
+						aluno.setSemestre(intSemestreColetado);
+			
+						String sqlInsert = "INSERT INTO tbl_estudantes ("
+								+ "matrícula,"
+								+ "nome,"
+								+ "idade,"
+								+ "curso,"
+								+ "semestre"
+								+ ") VALUES(?, ?, ?, ?, ?)"
+								+ ";";
 						
-						if (resultado == 1) {
-							System.out.println("O aluno foi inserido.");
-						} else {
-							System.out.println("O aluno NAO  foi inserido.");
-						}
-					}
-					catch(SQLException e){
-						System.out.println("Erro no prepared statement: " + e);
-					}
-					finally {
-						if (preparedStatement != null) {
-							try {
-								preparedStatement.close();
-							} catch(SQLException ex) {
-								System.out.println(ex);
+						PreparedStatement preparedStatement = sqLiteDemo.criarPreparedStatement(sqlInsert);
+						
+						try {
+							preparedStatement.setString(1, aluno.getMatricula());
+							preparedStatement.setString(2, aluno.getNome());
+							preparedStatement.setInt(3, aluno.getIdade());
+							preparedStatement.setString(4, aluno.getCurso());
+							preparedStatement.setInt(5, aluno.getSemestre());
+							
+							int resultado = preparedStatement.executeUpdate();
+							
+							if (resultado == 1) {
+								System.out.println("O aluno foi inserido.");
+							} else {
+								System.out.println("O aluno NAO  foi inserido.");
 							}
 						}
+						catch(SQLException e){
+							System.out.println("Erro no prepared statement: " + e);
+						}
+						finally {
+							if (preparedStatement != null) {
+								try {
+									preparedStatement.close();
+								} catch(SQLException ex) {
+									System.out.println(ex);
+								}
+							}
+					    }
+						verificacao = JOptionPane.showOptionDialog(frame.getContentPane(),"Deseja inserir outro aluno?","Banco de Dados de Estudantes", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
 				    }
-					verificacao = JOptionPane.showOptionDialog(frame.getContentPane(),"Deseja inserir outro aluno?","Banco de Dados de Estudantes", 0,JOptionPane.INFORMATION_MESSAGE,null,options,null);
-				}
+				 }
 		    }
 		    
 		    
@@ -236,23 +254,32 @@ public class programa {
 		    					
 		    	try {
 		    		String nomeAlterado = JOptionPane.showInputDialog("Insira o nome completo do aluno: ");
-					int idadeAlterado = Integer.parseInt(JOptionPane.showInputDialog("Insira a idade do aluno: "));
+					String StrIdadeAlterado = JOptionPane.showInputDialog("Insira a idade do aluno: ");
 					String cursoAlterado = JOptionPane.showInputDialog("Insira o curso do aluno: ");
-					int semestreAlterado = Integer.parseInt(JOptionPane.showInputDialog("Insira o semestre do aluno: "));
-		    		
-					Pessoa aluno = new Pessoa();
-					aluno.setNome(nomeAlterado);
-					aluno.setIdade(idadeAlterado);
-					aluno.setCurso(cursoAlterado);
-					aluno.setSemestre(semestreAlterado);
+					String StrSemestreAlterado = JOptionPane.showInputDialog("Insira o semestre do aluno: ");
 					
-		    		preparedStatement = sqLiteDemo.criarPreparedStatement(update);
-		    		preparedStatement.setString(1, aluno.getNome());
-		    		preparedStatement.setInt(2, aluno.getIdade());
-		    		preparedStatement.setString(3, aluno.getCurso());
-		    		preparedStatement.setInt(4, aluno.getSemestre());
-		    		
-		    		preparedStatement.executeUpdate();
+					if(matrAlterado == null || nomeAlterado == null || StrIdadeAlterado == null || cursoAlterado == null || StrSemestreAlterado == null) {
+						opcao = null;
+					}
+					else {
+						
+						int idadeAlterado = Integer.parseInt(StrIdadeAlterado);
+						int semestreAlterado = Integer.parseInt(StrSemestreAlterado);
+						
+						Pessoa aluno = new Pessoa();
+						aluno.setNome(nomeAlterado);
+						aluno.setIdade(idadeAlterado);
+						aluno.setCurso(cursoAlterado);
+						aluno.setSemestre(semestreAlterado);
+						
+			    		preparedStatement = sqLiteDemo.criarPreparedStatement(update);
+			    		preparedStatement.setString(1, aluno.getNome());
+			    		preparedStatement.setInt(2, aluno.getIdade());
+			    		preparedStatement.setString(3, aluno.getCurso());
+			    		preparedStatement.setInt(4, aluno.getSemestre());
+			    		
+			    		preparedStatement.executeUpdate();
+					}
 		    	}
 		    	catch (SQLException e) {
 		    		System.out.println("Erro no update: " + e);
@@ -286,7 +313,7 @@ public class programa {
 		    			result = "Foram deletados " + delLines + " registros.";
 		    		}
 		    		else {
-		    			result = "Não foi encontrado aluno algum com esta matrícula.";
+		    			result = "Não foi encontrado nenhum aluno com esta matrícula.";
 		    		}
 		    		
 	    			JOptionPane optionPane = new NarrowOptionPane();
